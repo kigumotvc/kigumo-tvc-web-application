@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kigumo TVC Portal</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#f9f9f9; }
+    .header-stripes { display:flex; height:20px; }
+    .stripe{flex:1;} .yellow{background:yellow;} .gray{background:gray;} .green{background:green;}
+
+    .title-bar { text-align:center; padding:20px; background:white; box-shadow:0 2px 6px rgba(0,0,0,.1); }
+    .title-bar h1 { margin:0; font-size:26px; font-weight:900; color:#000; text-transform:uppercase; }
+
+    .nav { display:flex; justify-content:center; background:#222; }
+    .nav button { background:none; border:none; color:white; padding:14px 20px; font-size:15px; font-weight:bold;
+      cursor:pointer; transition: transform .25s, box-shadow .25s, background .25s; border-radius:6px; margin:4px; }
+    .nav button:hover { background:#444; transform:scale(1.08); box-shadow:0 4px 10px rgba(0,0,0,.3); }
+    .nav button.active-btn { background:#28a745; color:white; transform:scale(1.05); }
+
+    .tab-content{display:none;padding:20px;} .active{display:block;}
+
+    form{max-width:400px;margin:auto;background:white;padding:20px;border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,.1);}
+    label{display:block;margin:10px 0 5px;}
+    input,select{width:100%;padding:8px;margin-bottom:12px;border:1px solid #ccc;border-radius:4px;}
+    input[type="checkbox"]{width:auto;margin-right:8px;}
+    button.send{background:green;color:white;border:none;padding:10px 16px;cursor:pointer;border-radius:4px;}
+    button.send:hover{background:darkgreen;}
+
+    .course-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:15px;}
+    .course-card{background:white;padding:20px;border-radius:12px;text-align:center;
+      box-shadow:0 4px 8px rgba(0,0,0,.1);transition:transform .3s,box-shadow .3s;}
+    .course-card:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 8px 16px rgba(0,0,0,.2);}
+    .course-card h3{margin-top:0;color:#2c3e50;}
+
+    .contact-info p{font-size:16px;} .contact-info b,.contact-info a{font-weight:bold;color:black;text-decoration:none;}
+  </style>
+</head>
+<body>
+  <div class="header-stripes"><div class="stripe yellow"></div><div class="stripe gray"></div><div class="stripe green"></div></div>
+  <div class="title-bar"><h1>KIGUMO TECHNICAL AND VOCATIONAL COLLEGE</h1></div>
+
+  <div class="nav">
+    <button onclick="showTab('home', event)">Home</button>
+    <button onclick="showTab('courses', event)">Courses</button>
+    <button onclick="showTab('admission', event)">Admission Letter</button>
+    <button onclick="showTab('contact', event)">Contact</button>
+  </div>
+
+  <div id="home" class="tab-content active"><h2>Welcome</h2><p>Use this portal to access your courses and admission letter.</p></div>
+
+  <div id="courses" class="tab-content">
+    <h2>Courses</h2>
+    <div class="course-list">
+      <div class="course-card"><h3>💻 ICT</h3><p><b>Diploma:</b> 3 years</p><p><b>Certificate:</b> 2 years</p></div>
+      <div class="course-card"><h3>🍴 Food & Beverages</h3><p><b>Diploma:</b> 3 years</p><p><b>Certificate:</b> 2 years</p></div>
+      <div class="course-card"><h3>⚙️ Mechanical Engineering</h3><p><b>Diploma:</b> 3 years</p><p><b>Certificate:</b> 2 years</p></div>
+      <div class="course-card"><h3>🏗️ Building</h3><p><b>Diploma:</b> 3 years</p><p><b>Certificate:</b> 2 years</p></div>
+      <div class="course-card"><h3>💅 Beauty</h3><p><b>Diploma:</b> 3 years</p><p><b>Certificate:</b> 2 years</p></div>
+    </div>
+  </div>
+
+  <div id="admission" class="tab-content">
+    <h2>Admission Letter</h2>
+    <form onsubmit="sendLetter(event)">
+      <label for="name">Full Name:</label><input type="text" id="name" required>
+      <label for="email">Email:</label><input type="email" id="email" required>
+      <label for="course">Select Course:</label>
+      <select id="course" required>
+        <option value="">-- Select Course --</option>
+        <option>ICT</option><option>Food & Beverages</option><option>Mechanical Engineering</option>
+        <option>Building</option><option>Beauty</option>
+      </select>
+      <label for="program">Select Program:</label>
+      <select id="program" required><option value="">-- Select Program --</option><option>Diploma</option><option>Certificate</option></select>
+      <label><input type="checkbox" id="terms" required> Accept Terms & Conditions</label>
+      <button type="submit" class="send">Send Admission Letter</button>
+    </form>
+    <p id="message"></p>
+  </div>
+
+  <div id="contact" class="tab-content">
+    <h2>Contact Us</h2>
+    <div class="contact-info">
+      <p><b>Telephone:</b> <a href="tel:0769394273">0769394273</a></p>
+      <p><b>Email:</b> <a href="mailto:info@kigumotvc.ac.ke">info@kigumotvc.ac.ke</a></p>
+      <p><b>Address:</b> P.O. Box 5-10203, Kigumo, Kenya</p>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabId, event) {
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelectorAll(".nav button").forEach(btn => btn.classList.remove("active-btn"));
+      event.target.classList.add("active-btn");
+    }
+
+    async function sendLetter(event) {
+      event.preventDefault();
+      const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        course: document.getElementById("course").value,
+        program: document.getElementById("program").value
+      };
+      const terms = document.getElementById("terms").checked;
+      const message = document.getElementById("message");
+
+      if (!terms) {
+        message.textContent = "❌ You must accept Terms & Conditions.";
+        message.style.color = "red";
+        return;
+      }
+
+      // Call backend (Python)
+      try {
+        let res = await fetch("http://127.0.0.1:5000/send_letter", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+        });
+        let result = await res.json();
+        message.textContent = result.message;
+        message.style.color = "green";
+      } catch (err) {
+        message.textContent = "❌ Failed to send. Backend not running.";
+        message.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
